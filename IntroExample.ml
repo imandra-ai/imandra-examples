@@ -1,3 +1,13 @@
+(**
+
+  Aesthetic Integration Limited
+  Copyright (c) 2014 - 2018. All rights reserved.
+
+  Visit https://www.imandra.ai for further information.
+
+*)
+
+
 let f (x,y) =
   match x with
     Some n ->

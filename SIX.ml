@@ -1,5 +1,14 @@
+(**
+
+  Aesthetic Integration Limited
+  Copyright (c) 2014 - 2018. All rights reserved.
+
+  Visit https://www.imandra.ai for further information.
+
+*)
+
+
 (* A model of the SIX Swiss Exchange matching logic in ImandraML  *)
-(* (c)Copyright Aesthetic Integration Ltd., 2015                  *)
 
 (* An example state-space decomposition of SIX's pricing function *)
 

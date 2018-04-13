@@ -1,18 +1,20 @@
-(*
- Imandra encoding of a major US dark pool (Form ATS).
- *** Order_higher_ranked transitivity example ***
- Aesthetic Integration Limited
- Copyright 2015. All rights reserved.
+(**
+
+  Aesthetic Integration Limited
+  Copyright (c) 2014 - 2018. All rights reserved.
+
+  Visit https://www.imandra.ai for further information.
+
 *)
 
-(* ************************************************************************* *)
 
 type price = int;;
 
-type mkt_data = { nbb : price;
-                  nbo : price;
-                  l_up : price;
-                  l_down : price };;
+type mkt_data = {
+  nbb : price;
+  nbo : price;
+  l_up : price;
+  l_down : price };;
 
 (* Three conditions for the nbbo *)
 
@@ -579,8 +581,8 @@ let pretty (o1, o2, o3, mkt) =
   mkt.l_down < mkt.nbb &&
   mkt.l_up > mkt.nbo
 ;;
+
 (*
-(** 'cx' is a low-level command for generating counter examples, if they exist. *)
 cx no_time_constraints (side, o1, o2, o3, mkt) =
   (order_higher_ranked(side, o1, o2, mkt) &&
    order_higher_ranked(side, o2, o3, mkt) &&

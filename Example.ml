@@ -1,3 +1,12 @@
+(**
+
+  Aesthetic Integration Limited
+  Copyright (c) 2014 - 2018. All rights reserved.
+
+  Visit https://www.imandra.ai for further information.
+
+*)
+
 type currency = GBP of float | USD of float | EUR of float;;
 
 let f x =

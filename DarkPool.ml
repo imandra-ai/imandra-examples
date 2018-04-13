@@ -1,4 +1,4 @@
-*
+(*
  Imandra encoding of a major US dark pool (Form ATS).
  *** Order_higher_ranked transitivity example ***
  Aesthetic Integration Limited

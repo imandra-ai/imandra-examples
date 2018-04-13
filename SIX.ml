@@ -68,7 +68,29 @@ type o_fill = { order_long : order;
 
 type fill_stack = o_fill list;;
 
-:load Examples/Messaging.ml
+(* A simplified version of the internal messaging format *)
+
+type msg_data_update = { u_order_id : int;
+                         new_price : float;
+                         new_qty : int };;
+
+type msg_data_cancel = { c_order_id : int };;
+
+type msg_data_success = { request_time : int;
+                          request_desc : int };;
+
+type msg_body = Msg_Fill of o_fill
+              | Msg_Reject of int
+              | Msg_Update of msg_data_update
+              | Msg_Cancel of msg_data_cancel
+              | Msg_Success of msg_data_success;;
+
+type e_msg = { msg_src : client;
+               msg_dest : client;
+               msg_body : msg_body;
+               msg_time : int };;
+
+type msg_buffer = e_msg list;;
 
 (* State *)
 
@@ -156,7 +178,7 @@ let is_a_match (s : exchange_state) =
 
 let match_qty (s : exchange_state) =
   match best_buy s, best_sell s with
-    Some bb, Some bs -> min (bb.display_qty, bs.display_qty)
+    Some bb, Some bs -> min bb.display_qty bs.display_qty
   | _ -> 0;;
 
 let price_round (price, step) = price;;
@@ -311,6 +333,7 @@ let match_price (s : exchange_state) =
 
   | _ -> Unknown;;
 
-(* Perform a state-space decomposition of match_price's state space *)
 
-:decompose match_price
+(* Perform a state-space decomposition of match_price's state space *)
+#install_printer Decompose.print;;
+Decompose.by_simp_ctx "match_price";;

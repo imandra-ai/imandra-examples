@@ -1,5 +1,5 @@
 (* A model of the SIX Swiss Exchange matching logic in ImandraML  *)
-(* (c)Copyright Aesthetic Integration Ltd., 2015                  *)
+(* (c)Copyright Aesthetic Integration Ltd., 2014 - 2018           *)
 
 (* An example state-space decomposition of SIX's pricing function *)
 
@@ -131,29 +131,6 @@ type exchange_state =
       processed_msgs : msg_buffer;
       top : float option;
     };;
-
-let states_same_except_order_book (s, s') =
-  s.period = s'.period
-  && s.period = EP_MAIN_TRADING
-  && s.book_state = s'.book_state
-  && s.book_state = BS_NORMAL
-  && s.mode = s'.mode
-  && s.mode = CONT_TRADE
-  && s.cur_time = s'.cur_time
-  && s.stop_trading_button_pressed = s'.stop_trading_button_pressed
-  && s.match_price_out_of_bounds = s'.match_price_out_of_bounds
-  && s.ref_price = s'.ref_price
-  && s.ref_price_bound = s'.ref_price_bound
-  && s.fill_stack = s'.fill_stack
-  && s.shadow_order_book = s'.shadow_order_book
-  && s.shadow_order_book = empty_book
-  && s.shadow_msgs = s'.shadow_msgs
-  && s.in_fill_stack_mode = s'.in_fill_stack_mode
-  && s.in_fill_stack_mode = false
-  && s.fill_log = s'.fill_log
-  && s.unprocessed_msgs = s'.unprocessed_msgs
-  && s.processed_msgs = s'.processed_msgs
-  && s.top = s'.top;;
 
 (* Need range-type thms *)
 

@@ -1,4 +1,8 @@
-let f (x,y) =
+(* A simple ImandraML model, illustrating decomposition regions   *)
+(* (c)Copyright Aesthetic Integration Ltd., 2014 - 2018           *)
+
+
+let f x y =
   match x with
     Some n ->
     if n > 20 then
@@ -16,11 +20,14 @@ let f (x,y) =
        99
 ;;
 
-:decompose f
+#install_printer Decompose.print;;
+
+(* Decomosiong the function *)
+let regions = Decompose.by_simp_ctx "f" [@@program];;
 
 (* Now, we'll add a simple side condition. *)
+let side_cond_1 (x : int option) (y : int) = (x = None);;
 
-let side_cond_1 (x,y : int option * _) =
-  x = None;;
+let conditioned_regions = Decompose.by_simp_ctx
+    ~assuming:"side_cond_1" "f" [@@program];;
 
-:decompose f assuming side_cond_1

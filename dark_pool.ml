@@ -582,17 +582,21 @@ let pretty (o1, o2, o3, mkt) =
   mkt.l_up > mkt.nbo
 ;;
 
-(*
-cx no_time_constraints (side, o1, o2, o3, mkt) =
+
+(* Checking ranking transitivity *)
+(* - a counterexample with no time constraints *)
+let no_time_constraints (side, o1, o2, o3, mkt) =
   (order_higher_ranked(side, o1, o2, mkt) &&
    order_higher_ranked(side, o2, o3, mkt) &&
    pretty(o1, o2, o3, mkt))
   ==>
   (order_higher_ranked(side, o1, o3, mkt));;
+Verify.top "no_time_constraints";;
+
 
 (** The second counterexample adds a further constraint that arrival times 
   of the 3 orders are different. *)
-cx time_constraints (side, o1, o2, o3, mkt) = 
+let time_constraints (side, o1, o2, o3, mkt) = 
   (order_higher_ranked(side, o1, o2, mkt) &&
    order_higher_ranked(side, o2, o3, mkt) &&
    pretty(o1, o2, o3, mkt) &&
@@ -603,4 +607,4 @@ cx time_constraints (side, o1, o2, o3, mkt) =
    o1.time <> o3.time )
   ==>
   (order_higher_ranked(side, o1, o3, mkt));;
-*)
+Verify.top "time_constraints";;

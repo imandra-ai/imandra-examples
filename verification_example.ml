@@ -14,7 +14,7 @@ let f x =
     Some n -> n + 1
   | None -> 0;;
 
-let foo (x,y) =
+let foo  x y  =
   match x, y with
     Some n, 100 ->
     n + 25
@@ -22,63 +22,84 @@ let foo (x,y) =
      76
   | _ -> 25;;
 
-let bar (x,y,z) =
+(* Trying to verify a statement about foo *)
+let verify_foo1 x y = (foo x y) <> 76;;
+Verify.top "verify_foo1";;
+
+(* Counterexample values  can be obtained from CX module: *)
+( CX.x , CX.y ) ;;
+
+(* Another statement about foo *)
+let verify_foo2 x y = (foo x y) <> 97;;
+Verify.top "verify_foo2";;
+
+
+
+let bar x y z  =
   match x,y,z with
     Some n, Some m, Some k ->
     n + m + k - 2
   | None, Some n, Some n' ->
      if n = 2*n' + 28
      then 956
-     else foo (Some (43*n), n')
+     else foo (Some (43*n))  n' 
   | _ -> 99;;
 
-verify _ (x,y) = foo(x,y) <> 76;;
+let verify_bar x y z  = ( bar x y z  <> 101883 );;
 
-verify _ (x,y) = foo(x,y) <> 97;;
+Verify.top "verify_bar";;
 
-verify _ (x,y,z) = bar(x,y,z) <> 101883;;
 
 let g x =
   if x > 0 then Some x else None;;
 
-verify _ x = g x <> None;;
+let verify_g x = g x <> None;;
 
-let c_add (x,y) =
+Verify.top "verify_g";;
+
+
+let c_add  x y  =
   match x,y with
     GBP n, GBP m -> Some (GBP (n +. m))
   | USD n, USD m -> Some (USD (n +. m))
   | EUR n, EUR m -> Some (EUR (n +. m))
   | _ -> None;;
 
-let same_currency (x,y) =
+let same_currency  x y  =
   match x,y with
     USD _, USD _ -> true
   | GBP _, GBP _ -> true
   | _ -> false;;
 
-verify c_add_safe (x,y) =
-  (same_currency(x,y))
+let verify_c_add_safe  x y  =
+  (same_currency x y )
     ==>
-  (c_add(x,y) <> None);;
+  (c_add x y  <> None);;
+Verify.top "verify_c_add_safe";;
 
-verify _ (x,y) = same_currency(x,y);;
+let verify_same_currency x y = same_currency x y ;;
+Verify.top "verify_same_currency";;
 
-(* Needs disambiguation on polymorphic ADT constructors *)
 
-verify _ (x,y) =
-  (same_currency(x,y))
+(* Check that if same currency, then addition result is not Note *)
+let verify_same_currency_adds x y =
+  (same_currency x y )
     ==>
-  (c_add(x,y) <> None);;
+  (c_add x y  <> None);;
+Verify.top "verify_same_currency_adds";;
 
-verify _ (x,y) =
-  (same_currency(x,y))
+let verify_add_result x y  =
+  (same_currency x y )
     ==>
-  (c_add(x,y) <> Some (GBP 169.0));;
+  (c_add x y  <> Some (GBP 169.0));;
+Verify.top "verify_add_result";;
 
-verify _ (x,y) =
-  (same_currency(x,y) &&
+let verify_add_positive x y  =
+  (same_currency x y  &&
      match x,y with
-       GBP n, GBP m -> n>0. && m>0.
-     | USD n, USD m -> n>0. && m>0.)
+     | GBP n, GBP m -> n>0. && m>0.
+     | USD n, USD m -> n>0. && m>0.
+     | _ -> false)
     ==>
-  (c_add(x,y) <> Some (GBP 169.0));;
+  (c_add x y  <> Some (GBP 169.0));;
+Verify.top "verify_add_positive";;

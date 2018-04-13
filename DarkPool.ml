@@ -1,4 +1,4 @@
-*
+(*
  Imandra encoding of a major US dark pool (Form ATS).
  *** Order_higher_ranked transitivity example ***
  Aesthetic Integration Limited
@@ -187,7 +187,7 @@ let cat_priority (o1, o2) =
 (* will trade                                                              *)
 (* ****************************************************************************** *)
 
-let eff_min_qty (o) = min (o.min_qty, o.leaves_qty);;
+let eff_min_qty (o) = min o.min_qty o.leaves_qty;;
 
 let effective_size (o, should_round, round_lot) =
   if should_round = true then
@@ -200,8 +200,8 @@ let effective_size (o, should_round, round_lot) =
 
 let lessAggressive (side, lim_price, far_price) =
   if lim_price <= 0 then far_price else
-    (if side = BUY then min(lim_price, far_price)
-     else max(lim_price, far_price));;
+    (if side = BUY then min lim_price  far_price 
+     else max lim_price  far_price );;
 
 (* This function is used to calculate the priority price *)
 let priority_price (side, o, mkt) =
@@ -579,7 +579,7 @@ let pretty (o1, o2, o3, mkt) =
   mkt.l_down < mkt.nbb &&
   mkt.l_up > mkt.nbo
 ;;
-
+(*
 (** 'cx' is a low-level command for generating counter examples, if they exist. *)
 cx no_time_constraints (side, o1, o2, o3, mkt) =
   (order_higher_ranked(side, o1, o2, mkt) &&
@@ -601,3 +601,4 @@ cx time_constraints (side, o1, o2, o3, mkt) =
    o1.time <> o3.time )
   ==>
   (order_higher_ranked(side, o1, o3, mkt));;
+  *)

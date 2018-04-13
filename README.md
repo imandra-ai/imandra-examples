@@ -6,3 +6,4 @@ ImandraML verification and decomposition examples
 - [decomposition_example.ml](decomposition_example.ml) - A simple example of (constrained/unconstrained) function decomposition 
 - [verification_example.ml](verification_example.ml) - A simple example of verification and counterexample generation  
 - [decomposition_tutorial1.ml](decomposition_tutorial1.ml) - Code for the first part of a tutotial on decomposition of state-transition systems.
+- [decomposition_tutorial2.ml](decomposition_tutorial2.ml) - Second part of a tutotial, where we perform an iterative decomposition of state-transition systems by means of a `Idf` module.

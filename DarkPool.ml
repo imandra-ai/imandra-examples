@@ -601,4 +601,4 @@ cx time_constraints (side, o1, o2, o3, mkt) =
    o1.time <> o3.time )
   ==>
   (order_higher_ranked(side, o1, o3, mkt));;
-  *)
+*)

@@ -1,7 +1,14 @@
+(**
+
+  Aesthetic Integration Limited
+  Copyright (c) 2014 - 2018. All rights reserved.
+
+  Visit https://www.imandra.ai for further information.
+
+*)
+
+
 (* A simple ImandraML model, illustrating decomposition regions   *)
-(* (c)Copyright Aesthetic Integration Ltd., 2014 - 2018           *)
-
-
 let f x y =
   match x with
     Some n ->

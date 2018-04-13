@@ -1,6 +1,14 @@
-(* A model of the SIX Swiss Exchange matching logic in ImandraML  *)
-(* (c)Copyright Aesthetic Integration Ltd., 2014 - 2018           *)
+(**
 
+  Aesthetic Integration Limited
+  Copyright (c) 2014 - 2018. All rights reserved.
+
+  Visit https://www.imandra.ai for further information.
+
+*)
+
+
+(* A model of the SIX Swiss Exchange matching logic in ImandraML  *)
 (* An example state-space decomposition of SIX's pricing function *)
 
 type order_type = Market | Limit | Quote;;

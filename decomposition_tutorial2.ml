@@ -100,7 +100,7 @@ let template2 (e : evts) (state : state) (i : int)  : bool =
 let template1 (e : evts) (state : state) (i : int)  : bool =
     match e with
     | Sub n1 :: Add n2 :: [] ->
-    ( is_message_valid state ( Add n1 ) 
+    ( is_message_valid state ( Sub n1 ) 
       && ( (i = 0) || (template2 ( Add n2 :: [] ) (scenario e state) (i - 1)) )
     )
     | _ -> false

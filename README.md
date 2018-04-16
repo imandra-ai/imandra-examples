@@ -1,6 +1,7 @@
-ImandraML verification and decomposition examples
+![Aesthetic Integration](https://storage.googleapis.com/imandra-assets/images/github/imandra_eit_head.svg)
+---
+Welcome to Imandra examples and tutorials repo.
 
-## Collection of ImandraML model analysis examples 
 - [six_swiss.ml](six_swiss.ml) -  A model of the SIX Swiss Exchange matching logic in IML with state-space decomposition of SIX's pricing function.
 - [dark_pool.ml](dark_pool.ml) - Imandra encoding of a major US dark pool (Form ATS). Verification of transitivity of order ranking function.
 - [decomposition_example.ml](decomposition_example.ml) - A simple example of (constrained/unconstrained) function decomposition.

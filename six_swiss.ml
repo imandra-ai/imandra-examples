@@ -321,4 +321,4 @@ let match_price (s : exchange_state) =
 
 (* Perform a state-space decomposition of match_price's state space *)
 #install_printer Decompose.print;;
-Decompose.by_simp_ctx "match_price";;
+let regions = Decompose.by_simp_ctx "match_price";;

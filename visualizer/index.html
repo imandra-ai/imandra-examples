@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  	<meta http-equiv="x-ua-compatible" content="ie=edge">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imandra Regions Explorer</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="static/css/foundation.css">
+    <link rel="stylesheet" href="static/css/app.css">
+    <link rel="stylesheet" href="static/css/voronoi.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville|Open+Sans|Source+Code+Pro">
+  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+	<div class="i-top-bar ">
+    <div class="tb-item"><img src="images/logo-imandra.svg" width="144px"></div>
+    <div class="tb-item-parent"> 
+      <div class="tb-item top-bar-title">IMANDRA REGIONS EXPLORER</div>
+        <div class="border"></div>
+      		<div class="tb-item"><ul class=" dropdown menu" id="menu"></ul></div>
+        <div class="border"></div>
+    </div>
+    <div class="tb-item"><img src="images/logo-by-ai.svg" width="100px"></div>
+  </div>
+    <div class="fullwidth">
+            <div class="col-one large-7 columns">
+                <div id="visualization" style="height: 90vh"></div>
+                <div class="zoom-desc"><p>* Scroll up to zoom out from region</p></div>
+            </div>
+            <div class="col-two large-5 columns">
+                <div id="description" style="height: 90vh"></div>
+            </div>
+    </div>
+    <script src="static/d3.v4.min.js"></script>
+    <script src="static/hammer.min.js"></script>
+    <script src="static/carrotsearch.foamtree.js"></script>
+    <script src="static/constructGroups.js"></script>
+    <script src="style.js"></script>
+    <script>
+        window.addEventListener("load", function() {
+        var foamtree = new CarrotSearchFoamTree({ id: "visualization" });
+        foamtree.set(foamtreeStyle);
+
+		function drawDiagram(json){
+			d3.json(json, function(data) 
+			{
+				var map = ConstructGroups(data.regions);
+
+				foamtree.set({
+				  dataObject: { groups:map },
+				  onGroupSelectionChanged: function (info) {
+					var selection = d3.select("#description");
+					selection.text("");
+					if(info.groups.length != 1) return; 
+					if(!("payload" in info.groups[0])) return;
+					var region = info.groups[0].payload;
+					selection.append("h3")
+							 .text("Region " + region.name  );
+					selection.append("h5").text("Constraints:");
+					selection.append("div").classed("callout", true)
+							 .append("ol")
+							 .selectAll("li").data(region.constraints)
+							 .enter().append("li").text(String);
+					selection.append("h5").text("Invariant:");
+
+					selection.append("div").classed("callout", true)
+										   .text(region.invariant);
+				  }
+				});
+			});
+		}
+
+        d3.json("settings.json", function(data){
+			d3.select("#menu")
+			  .selectAll("li").data(data.jsons).enter()
+			  .append("li").append("a").attr("href","#")
+                                       .text(function(d){return d.name})
+									   .on("click", function(d){ drawDiagram(d.file); });
+
+            drawDiagram(data.jsons[0].file);
+        }); 
+        });
+    </script>
+  </body>
+</html>

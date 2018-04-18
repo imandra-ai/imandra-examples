@@ -40,20 +40,39 @@ module Scenario = struct
   type state = counter_state
   type event = message
 
-  let guard_state  = id 
+  let guard_state  = id
 
   let to_decompose = "Scenario.scenario"
   let global_basis = []
-  let pp_state     = Pp.pp_counter_state 
+  let pp_state     = Pp.pp_counter_state
 
-  let init_state = { counter = 0 ; incoming = None } 
+  let init_state = { counter = 0 ; incoming = None }
   let step event state =
     one_step { state with incoming = Some event }
- 
+
   let scenario (e : event list) (state : state) : state =
-    match e with e :: _ -> step e state | [] -> state 
-     
-  let scenario_sig (e) = scenario e init_state 
+    match e with e :: _ -> step e state | [] -> state
+
+  let scenario_sig (e) = scenario e init_state
+
+  let is_message_valid message state  =
+    match message with
+    | Reset -> true
+    | Add n -> n > 0
+    | Sub n -> n > state.counter ;;
+
+  module Template = struct
+    type t = Add | Sub | Reset
+
+    let check _ = "Scenario.is_message_valid"
+
+    let concrete = function
+      | Add -> ["Add"]
+      | Sub -> ["Sub"]
+      | Reset -> ["Reset"]
+
+  end
+
 end
 ;;
 
@@ -61,69 +80,46 @@ Extract.eval ~signature:(Event.DB.fun_id_of_str "Scenario.scenario_sig") () [@@p
 
 #program;;
 
-module ScenarioMex = struct
-  type event = message
-  let event_of_region ~signature region =
-     List.hd Mex.( (of_region ~signature region).e ) 
-end;;
-
-#logic;;
-
-#program;;
-
 Topfind.load_deeply ["ocamlgraph"];;
-Topfind.load_deeply ["containers"];;  
+Topfind.load_deeply ["containers"];;
 Topfind.load_deeply ["containers.iter"];;
 
-System.mod_use "idf.ml";;
+System.mod_use "idf.iml";;
+
+module ScenarioMex = struct
+  type event = message
+  let events_of_region ~signature region =
+    List.hd Mex.( (of_region ~signature region).e )
+    |> CCLazy_list.return
+end;;
 
 module Testgen = Idf.Make(Scenario)(ScenarioMex);;
+module G = Testgen.G.Make(struct
+                           let guarded_event_hash {Testgen.event;_} = Hashtbl.hash (Pp.pp_message event)
+                           let indexed_state_hash {Testgen.state;_} = Hashtbl.hash (Pp.pp_counter_state state)
+                           let guarded_event_label e = "event_" ^ (guarded_event_hash e |> string_of_int)
+                           let indexed_state_label s = "state_" ^ (indexed_state_hash s |> string_of_int)
+                         end);;
 
 #logic;;
-
-let is_message_valid state message = 
-  match message with
-  | Reset -> true
-  | Add n -> n > 0 
-  | Sub n -> n > state.counter ;;
 
 type evts  = Scenario.event list;;
 type state = Scenario.state;;
 let scenario = Scenario.scenario;;
 
-let template2 (e : evts) (state : state) (i : int)  : bool =
-    match e with
-    | Add n2 :: [] -> 
-    ( is_message_valid state ( Add n2 ) )
-    | _ -> false
-
-let template1 (e : evts) (state : state) (i : int)  : bool =
-    match e with
-    | Sub n1 :: Add n2 :: [] ->
-    ( is_message_valid state ( Sub n1 ) 
-      && ( (i = 0) || (template2 ( Add n2 :: [] ) (scenario e state) (i - 1)) )
-    )
-    | _ -> false
-
-let template0 (e : evts) (state : state) (i : int)  : bool =
-    match e with
-    |  Add n0 :: Sub n1 :: Add n2 :: [] -> 
-    ( is_message_valid state ( Add n0 ) 
-      && ( (i = 0) || (template1 ( Sub n1 :: Add n2 :: [] ) (scenario e state) (i - 1)) )
-	)
-    | _ -> false
-;;
-
 #program;;
 
 let steps , graph =
-  Testgen.decompose 
-    ~asm_of_step:["template0"; "template1"; "template2"]
+  Testgen.decompose
+    ~template:Scenario.Template.[Add;Sub;Add]
     Scenario.init_state
 ;;
 
-steps 
+steps
   |> Testgen.L.reify_all
-  |> List.map @@ List.map ( fun (a,e,b) -> 
+  |> List.map @@ List.map ( fun (a,e,b) ->
     Testgen.(a.state.counter, e.event, b.state.counter)
   );;
+
+G.output_graph graph "graph.dot";;
+

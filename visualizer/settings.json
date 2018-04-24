@@ -1,6 +1,7 @@
 { "jsons":[
     {"file":"static/six_swiss.ml.json", "name":"SIX" },
     {"file":"static/sigmax_ranking.json", "name":"SigmaX ranking" },
+    {"file":"static/uc.json", "name":"UniCredit POC" },
     {"file":"static/decomposition_example.ml.json", "name":"Example" },
     {"file":"static/decomposition_tutorial1.ml.json", "name":"Tutorial" }
 ]
